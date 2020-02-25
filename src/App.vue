@@ -25,6 +25,7 @@ for(var i=1; i<4; i++) {
 }
 var node3 = g.nodes[3];
 var node4 = g.addNode(company());
+g.addLink(node3, node4);
 for(var i=5; i<9; i++) {
   var node = g.addNode(company());
   g.addLink(node3, node);
