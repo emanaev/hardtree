@@ -122,13 +122,17 @@ class VGraph extends Graph {
       if (visited.indexOf(current)>=0) return;
       visited.push(current);
       var local = current.outgoing.map(link => link.target);
+      // пересортируем исходящие узлы так, чтобы склеить кластера
       local.sort((node1,node2) => {
         if (current.data.cluster) {
+          // подтянем исходящие узлы с тем же кластером, что и обрабатываемый узел, вверх
           if (node1.data.cluster==current.data.cluster && node1.data.cluster!=node2.data.cluster) return 1;
           if (node2.data.cluster==current.data.cluster && node1.data.cluster!=node2.data.cluster) return -1;
         }
+        // узлы без кластеров - вниз
         if (node1.data.cluster && !node2.data.cluster) return 1;
         if (node2.data.cluster && !node1.data.cluster) return -1;
+        // сгруппируем по кластеру
         if (node1.data.cluster>node2.data.cluster) return 1;
         if (node2.data.cluster>node1.data.cluster) return -1;
         return 0;
@@ -141,7 +145,6 @@ class VGraph extends Graph {
     result.reverse();
     for(var i=0; i<result.length; i++) {
       result[i].x = i+1;
-      result[i].y = null;
     }
     this.nodes = result;
   }
@@ -157,7 +160,7 @@ class VGraph extends Graph {
       if (!node.y) {
         // здесь мы еще не были
         node.outgoing.forEach(link => {
-          // найдем диапазон y для нижестоящх связей
+          // найдем диапазон y для нижестоящих связей
           last_y = DFS(link.target);
           if (!start_y) start_y = last_y;
           link.y = last_y
@@ -171,26 +174,30 @@ class VGraph extends Graph {
         y++;
       } else {
         // нижестояие связи есть, разместим эту связь посредине всех нижестоящих
-        res = start_y;//Math.floor( (start_y+last_y+1)/2 );
+        res = Math.floor( (start_y+last_y+1)/2 );
       }
       if (!node.y)
-        // если узел встречается первый раз, значит, ему тоже присвоим координату + она же - пометка от повторного прохода по узлу
+        // если узел встречается первый раз, значит, ему тоже присвоим координату, плюс она же - пометка от повторного прохода по узлу
         node.y = res;
       return res;
     }
     this.topoSort();
+    this.nodes.forEach(node => {
+      node.y = null;
+    });
     this.nodes.forEach(root => {
       if (root.incoming.length>0) return;
       DFS(root);
     })
   }
 
-  // рассчитать позиции кластеров (блоков, из которых отображаются кластера)
+  // рассчитать позиции кластеров (точнее - блоков, из которых отображаются кластера)
   prepare() {
     this.treeSort();
     this.clusters = {}
     for(var i=0; i<this.nodes.length; i++) {
       var node = this.nodes[i];
+      // запомнить начатьный и конечный y узлов на этом уровне
       var y_list = node.incoming.map(link => link.y);
       y_list.push(node.y);
       node.start_y = Math.min.apply(Math, y_list);
@@ -200,15 +207,18 @@ class VGraph extends Graph {
         var blocks = this.clusters[node.data.cluster].blocks;
         var last_block = blocks[blocks.length-1];
         if (last_block.stop_x==node.x-1) {
+          // продолжаем предыдущий блок
           last_block.stop_x++;
           if (node.start_y<last_block.start_y) last_block.start_y = node.start_y;
           if (node.stop_y>last_block.stop_y) last_block.stop_y = node.stop_y;
           continue;
         }
       } else {
+        // такого кластера еще не было, создаем
         this.clusters[node.data.cluster] = {blocks: [], color: cluster_colors[Object.keys(this.clusters).length]};
       }
-      this.clusters[node.data.cluster].blocks.push({start_x: node.x, stop_x: node.x, start_y: node.start_y, stop_y: node.stop_y});
+        // создаем новый блок
+        this.clusters[node.data.cluster].blocks.push({start_x: node.x, stop_x: node.x, start_y: node.start_y, stop_y: node.stop_y});
     }
     // удалить кластера, состоящие из одного узла
     for(var key in this.clusters) {
