@@ -9,18 +9,18 @@ export default {
   computed: {
     start: function() {
       return {
-        x: this.link.source.y*50+110,
+        x: this.link.source.y*110+110,
         y: this.link.source.x*50+34
       }
     },
     stop: function() {
       return {
-        x: this.link.y*50+110,
+        x: this.link.y*110+110,
         y: this.link.target.x*50+10
       };
     },
     d: function() {
-      return 'M'+this.start.x+','+this.start.y+'v9 H'+this.stop.x+' V'+this.stop.y+'l-3,-3h6l-3,3';
+      return 'M'+this.start.x+','+this.start.y+'v10 H'+this.stop.x+' V'+this.stop.y+'l-3,-3h6l-3,3';
     }
   },
   data() {

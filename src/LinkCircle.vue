@@ -9,13 +9,13 @@ export default {
   computed: {
     start: function() {
       return {
-        x: this.rec.origin.start_y*50+100,
+        x: this.rec.origin.start_y*110+100,
         y: this.rec.origin.x*50+22
       }
     },
     stop: function() {
       return {
-        x: this.rec.circle.start_y*50+100,
+        x: this.rec.circle.start_y*110+100,
         y: this.rec.circle.x*50+22
       };
     },

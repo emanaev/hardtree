@@ -6,40 +6,9 @@
 
 <script>
 import Schema from './Schema.vue';
-import VGraph from './vgraph.js'
+import {defaultSchema, groupedSchema} from './data.js'
 
-var company_idx = 0;
-function company() {
-  company_idx++;
-  return {
-    id: '77'+Math.floor(Math.random()*100000000),
-    name: 'ООО "Ромашка '+company_idx.toString()+'"',
-    cluster: Math.random()>.5 ? Math.floor(Math.random()*3+1).toString() : false
-  }
-}
-var g = new VGraph();
-g.addNode(company());
-for(var i=1; i<4; i++) {
-  var node = g.addNode(company());
-  g.addLink(g.nodes[i-1],node);
-}
-var node3 = g.nodes[3];
-var node4 = g.addNode(company());
-g.addLink(node3, node4);
-for(var i=5; i<9; i++) {
-  var node = g.addNode(company());
-  g.addLink(node3, node);
-  g.addLink(node, node4);
-}
-for(var i=9; i<20; i++) {
-  var node = g.addNode(company());
-  for(var j=4; j<9; j++) {
-    g.addLink(g.nodes[j], node);
-  }
-}
-g.addLink(g.nodes[17], g.nodes[6]);
-g.addLink(g.nodes[13], g.nodes[6]);
-
+var g = defaultSchema();
 g.prepare();
 
 export default {
