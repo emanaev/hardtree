@@ -1,8 +1,8 @@
 <template>
   <g v-bind:transform="'translate('+x+' '+y+')'" @dblclick="$emit('generate-forward')">
-    <rect v-bind:x="11" v-bind:y="10" width="98" height=24 rx="10" v-if="!node.data.group" class="node" v-bind:style="primary?'':'stroke-dasharray: 2; stroke-width: 1'" />
-    <rect v-bind:x="39" v-bind:y="13" width="48" height=24 rx="10" v-if="node.data.group" class="node-shadow" v-bind:style="primary?'':'stroke-dasharray: 2; stroke-width: 1'" />
-    <rect v-bind:x="36" v-bind:y="10" width="48" height=24 rx="10" v-if="node.data.group" class="node" v-bind:style="primary?'':'stroke-dasharray: 2; stroke-width: 1'" />
+    <rect v-if="!node.data.group" v-bind:x="11" v-bind:y="10" width="98" height=24 rx="10" class="node" v-bind:style="primary?(node.data.main?'stroke-width: 3;':''):'stroke-dasharray: 2; stroke-width: 1;'" />
+    <rect v-if="node.data.group" v-bind:x="39" v-bind:y="13" width="48" height=24 rx="10" class="node-shadow" v-bind:style="primary?'':'stroke-dasharray: 2; stroke-width: 1'" />
+    <rect v-if="node.data.group" v-bind:x="36" v-bind:y="10" width="48" height=24 rx="10" class="node" v-bind:style="primary?'':'stroke-dasharray: 2; stroke-width: 1'" />
     <text v-bind:x="node.data.group?37:12" v-bind:y="27" class="node-inn">{{node.data.name}}</text>
   </g>
 </template>

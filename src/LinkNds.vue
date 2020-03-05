@@ -5,7 +5,7 @@
 <script>
 export default {
   name: 'LinkNds',
-  props: ["link"],
+  props: ["link", "reversed"],
   computed: {
     start: function() {
       return {
@@ -20,7 +20,8 @@ export default {
       };
     },
     d: function() {
-      return 'M'+this.start.x+','+this.start.y+'v10 H'+this.stop.x+' V'+this.stop.y+'l-3,-3h6l-3,3';
+      return 'M'+this.start.x+','+this.start.y+(this.reversed?'l3,3h-6l3,-3':'')+'v10 H'+this.stop.x
+        +' V'+this.stop.y+(this.reversed?'':'l-3,-3h6l-3,3');
     }
   },
   data() {
